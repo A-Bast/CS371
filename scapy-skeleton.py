@@ -62,6 +62,12 @@ def getPairFlow(flow):
     for key, value in data.items():
         print(key, "\t Count:",data[key])
 
+#Writes tuples and their averages to a csv file
+def writeData():
+    with open('eval.csv', mode='a', newline='') as eval:                #open csv in append mode
+        eval_writer = csv.writer(eval, delimiter=',')            #setup line writing
+        for key,value in data.items():
+           eval_writer.writerow(key + value)
 
 def fields_extraction(x):         #each loop for sniff do this
     global dict
@@ -81,9 +87,9 @@ def fields_extraction(x):         #each loop for sniff do this
             
 
                 
-with open('eval.csv','a',newline='') as eval:                #open csv in append mode
     eval_writer = csv.writer(eval, delimiter=',')            #setup line writing
     
 sniff(prn = fields_extraction,stop_filter = stopfilter)
+#writeData();
 best = getBestFlow()
 getPairFlow(best)
