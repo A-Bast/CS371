@@ -1,4 +1,5 @@
 from scapy.all import *
+from scapy.layers.inet import IP, TCP, UDP
 import pandas as pd
 import numpy as np
 import sys
@@ -80,13 +81,13 @@ def printToFile(flow,features,label):
 
 def fields_extraction(x):         #each loop for sniff do this
     global dict
-    if IP in x:               #if IP is a valid request, do this
+    if x.haslayer(IP):               #if IP is a valid request, do this
         increment()  
         n=()
-        if TCP in x:
-            n = (x[IP].src, x[TCP].sport,x[IP].dst,x[TCP].dport,"tcp")         #Generate flow id for TCP   
-        if UDP in x:
-            n = (x[IP].src, x[UDP].sport,x[IP].dst,x[UDP].dport,"udp")         #Generate flow id for UDP  
+        if x.haslayer(TCP):
+            n = (x[IP].src, x[TCP].sport,x[IP].dst,x[TCP].dport,0)         #Generate flow id for TCP 
+        if x.haslayer(UDP):
+            n = (x[IP].src, x[UDP].sport,x[IP].dst,x[UDP].dport,1)         #Generate flow id for UDP  
 
         if n in data:
             data[n] = updateTuple(data[n],(x[IP].len,checkTime(x.time,n),x[IP].ttl,x[IP].frag))  #Update the feature averages
